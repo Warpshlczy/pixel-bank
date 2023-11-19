@@ -22,7 +22,7 @@
                 v-model="name"
                 :counter="10"
                 :rules="nameRules"
-                label="你的名字"
+                label="用户名"
                 required
               ></v-text-field>
 
@@ -79,7 +79,7 @@ export default {
       (v) =>
         (/^[0-9]{0,}[a-zA-Z]{1,}[0-9]{0,}\w{0,}$/.test(v) &&
           /^\w{6,16}$/.test(v)) ||
-        "password must be valid",
+        "password must be valid,密码必须大于8位小于16位",
     ],
   }),
 
@@ -89,24 +89,47 @@ export default {
     },
     regist() {
       if (this.$refs.form.validate()) {
-        this.$axios
-          .post("/AddAdmin", {
-            admin_name: this.name,
-            admin_username: this.email,
-            admin_password: this.password,
-            admin_QQ: this.email,
+        // this.$axios
+        //   .post("/AddAdmin", {
+        //     admin_name: this.name,
+        //     admin_username: this.email,
+        //     admin_password: this.password,
+        //     admin_QQ: this.email,
+        //   })
+        //   .then(
+        //     (res) => {
+        //       alert("Regist successfully!!");
+        //       this.$router.push("/login");
+        //       return res;
+        //     },
+        //     (error) => {
+        //       alert("Failed");
+        //       return error;
+        //     }
+        //   );
+        this.$api
+          .register({
+            userAccount: this.name,
+            userPassword: this.password,
+            email: this.email,
           })
-          .then(
-            (res) => {
-              alert("Regist successfully!!");
-              this.$router.push("/login");
-              return res;
-            },
-            (error) => {
-              alert("Failed");
-              return error;
+          .then((res) => {
+            switch (res.data.code) {
+              case 0: {
+                alert("注册成功！");
+                this.$router.push("/login");
+                break;
+              }
+              case 40000: {
+                alert(res.data.message + ":" + res.data.description);
+                break;
+              }
             }
-          );
+          }),
+          (error) => {
+            alert("未知错误");
+            return error;
+          };
       } else {
         alert("Please follow the rules!");
       }

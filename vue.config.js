@@ -1,27 +1,17 @@
-
 const { defineConfig } = require('@vue/cli-service')
-
-const path = require("path");
-function resolve(dir) {
-  return path.join(__dirname, dir);
-}
-
 module.exports = defineConfig({
   transpileDependencies: [
     'vuetify'
   ],
-  lintOnSave: false,
-  chainWebpack: (config) => {
-    config.resolve.alias
-      .set("@", resolve("src"))
-  },
   devServer: {
-    host: "0.0.0.0",
-    port: "8080",
+    port: 8080,//它是用来修改你打开后的端口号的
+    open: true,//值为 true的话，项目启动时自动打开到浏览器里边， false不会打开
+    historyApiFallback: true,
+    allowedHosts: "all",
     proxy: {
       '/api': {
-        target: 'http://localhost:8090',
-        ws: true,
+        target: 'http://192.168.247.159:8080',
+        ws: false,
         secure: false,
         changeOrigin: true,
         pathRewrite: {
@@ -29,9 +19,6 @@ module.exports = defineConfig({
         }
       },
     },
-    client: {
-      webSocketURL: 'ws://0.0.0.0:8080/ws'
-    }
   },
 
 })

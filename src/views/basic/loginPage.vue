@@ -18,9 +18,10 @@
                 <v-spacer></v-spacer>
               </v-row>
               <v-text-field
-                prepend-icon="mdi-mail"
-                v-model="email"
-                label="你小子的邮箱"
+                prepend-icon="mdi-account-circle-outline"
+                v-model="name"
+                :counter="10"
+                label="用户名"
                 required
               ></v-text-field>
 
@@ -52,33 +53,28 @@ export default {
   data: () => ({
     valid: true,
     isLoginSuccess: true,
-    email: "",
+    name: "",
     password: "",
   }),
 
   methods: {
     login() {
-      this.$axios({
-        url: "/Admin/LoginSuccess",
-        params: {
-          admin_username: this.email,
-          admin_password: this.password,
-        },
-      }).then(
-        (res) => {
-          if (res.data == "1") {
-            alert("Login successfully");
-            this.$router.push({ path: "/boxlist", query: { id: this.email } });
-          } else {
-            alert("Login failure, account or password error!");
+      this.$api
+        .login({ userAccount: this.name, userPassword: this.password })
+        .then((res) => {
+          switch (res.data.code) {
+            case 0: {
+              alert("登录成功！");
+              localStorage.setItem("token", res.data.data.userPassword);
+              this.$router.push("/main");
+              break;
+            }
+            case 40000: {
+              alert(res.data.message + ":" + res.data.description);
+              break;
+            }
           }
-          return res;
-        },
-        (error) => {
-          alert("Failed");
-          return error;
-        }
-      );
+        });
     },
   },
 };
