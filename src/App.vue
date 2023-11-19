@@ -8,10 +8,8 @@
 export default {
   name: "App",
 
-  components: {},
-
   data: () => ({
-    //
+    //s
   }),
 };
 </script>

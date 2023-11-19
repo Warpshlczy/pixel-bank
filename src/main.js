@@ -10,6 +10,7 @@ Vue.config.productionTip = false
 Vue.prototype.$http = axios
 Vue.prototype.$api = apis
 Vue.use(VueRouter)
+
 new Vue({
   router,
   vuetify,
